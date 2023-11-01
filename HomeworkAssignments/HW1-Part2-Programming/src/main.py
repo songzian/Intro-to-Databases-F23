@@ -51,6 +51,7 @@ async def get_student(student_id: int) -> Optional[Student]:
     :param student_id: The ID to be matched
     :returns: The student with ID student_id, or None if none exists
     """
+    return student_resource.get_by_id(student_id)
     pass
 
 @app.post("/students")
@@ -60,6 +61,7 @@ async def post_student(student: Student) -> int:
     :param student: The student to be created
     :returns: The number of students created
     """
+    return student_resource.create(student)
     pass
 
 @app.put("/students/{student_id}")
@@ -79,6 +81,10 @@ async def put_student(student_id: int, req: Request) -> int:
     """
 
     # Use `await req.json()` to access the request body
+    student_dict = await req.json()
+    if 'ID' in student_dict and student_dict['ID'] != student_id:
+        return 0
+    return student_resource.update(student_id,student_dict)
     pass
 
 @app.delete("/students/{student_id}")
@@ -88,6 +94,7 @@ async def delete_student(student_id: int) -> int:
     :param student_id: The ID of the student to be deleted
     :returns: The number of rows affected
     """
+    return student_resource.delete(student_id)
     pass
 
 if __name__ == "__main__":
